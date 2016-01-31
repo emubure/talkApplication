@@ -29,8 +29,6 @@ public class MainActivity extends Activity {
     int number=0;
 
 
-
-
     //他クラスの宣言
     Reply Reply;
     Memory Memory;
