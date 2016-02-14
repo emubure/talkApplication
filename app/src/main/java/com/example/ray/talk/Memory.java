@@ -18,27 +18,22 @@ public class Memory {
     DatabaseHelper hlpr;
     Context c;
 
-    public Memory(Context con){
+    public Memory(Context con) {
 
         c = con;
     }
 
-    public void r(String str1, String str2){
-        hlpr = new DatabaseHelper(c);
-        mDb = hlpr.getWritableDatabase();
-
+    public void r(String str1, String str2, SQLiteDatabase mDb) {
         ContentValues values = new ContentValues();
         values.put("word", str1);
-        values.put("reply",str2);
-        try {
-            mDb.insert("pattern", null, values);
-        } finally {
-            mDb.close();
-        }
+        values.put("reply", str2);
+        mDb.insert(DatabaseHelper.TABLE_NAME, null, values);
     }
-    public void memory(){
-        r("おはよう","おはようございます");
-        r("こんにちは", "こんにちは。");
-        r("こんばんは", "こんばんは。");
+
+    public void memory(SQLiteDatabase mDb) {
+        Log.e("TAG","TAG");
+        r("おはよう", "おはようございます", mDb);
+        r("こんにちは", "こんにちは。", mDb);
+        r("こんばんは", "こんばんは。", mDb);
     }
 }

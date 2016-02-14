@@ -8,53 +8,87 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 /**
  * Created by Ray on 2015/11/15.
  */
-//•ÔMˆ—AMemoryƒNƒ‰ƒX‚Åsqlite‚É‚Â‚¢‚©‚µ‚½ƒJƒ‹ƒ€‚ğŒŸõ‚µ‚Ä•ÔM
+//ï¿½ÔMï¿½ï¿½ï¿½ï¿½ï¿½AMemoryï¿½Nï¿½ï¿½ï¿½Xï¿½ï¿½sqliteï¿½É‚Â‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä•ÔM
 public class Reply {
     private SQLiteDatabase mDb;
 
-    static  String SmeInput = "";
+    static String SmeInput;
+    static String SmeOutput;
     DatabaseHelper hlpr;
     Context con;
 
-    public Reply(Context c){
+    public Reply(Context c) {
         con = c;
     }
 
-    public void MReply(){
-        hlpr  = new DatabaseHelper(con);
-        mDb = hlpr.getWritableDatabase();
+    public void MReply(SQLiteDatabase mDb) {
+        Log.d("RConfirm", "success");
 
-        String[] colums = {"word ","reply"};
-        String selection = SmeInput;//"word LIKE '%' || "+SmeInput+" || '%'";
-        String[] selectionArgs = null;
+
+        final String[] columns = {"word", "reply"};
+        String where = "word = ?";//"word LIKE '%' || "+SmeInput+" || '%'";
+        String param = "ãŠã¯ã‚ˆã†";//SmeInput;
         String groupBy = null;
         String having = null;
         String orderBy = null;
+        Cursor c = null;
 
         try {
-            Cursor cursor = mDb.query("pattern", colums, selection, selectionArgs, groupBy, having, orderBy);
-            StringBuilder text = new StringBuilder();
-            while (cursor.moveToNext()) {
-                String SmeInput = cursor.getString(1);
+            c = mDb.query(DatabaseHelper.TABLE_NAME, //
+                    columns, //
+                    where, //
+                    new String[]{param}, //
+                    groupBy, //
+                    having, //
+                    orderBy);
+
+            Log.d("RConfirm", "success1");
+            while (c.moveToNext()) {
+                Log.d("RConfirm", "success2");
+                String reply = c.getString(c.getColumnIndex("reply"));
+                Log.d("RConfirm", reply);
+                SmeOutput = reply.toString();
+                Log.d("RConfirm", SmeOutput);
             }
+        } catch (SQLiteException e) {
+            Log.e("SQLError", e.toString());
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+
+       /* try {
+            Cursor cursor = mDb.query("pattern", colums, selection, selectionArgs, groupBy, having, orderBy);
+            boolean isEof = cursor.moveToFirst();
+            while(isEof){
+                SmeInput = cursor.getString(2);
+                isEof = cursor.moveToNext();
+            }
+            cursor.close();
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê‚ï¿½ï¿½ï¿½Ä•`ï¿½ï¿½
+            Log.e("Config", SmeInput);
         } catch(SQLiteException e) {
             Log.e("SQLERROR", e.toString());
         } finally {
             mDb.close();
-        }
+        }*/
+
+
 
         /*Cursor cursor = mDb.query("pattern", new String[] {"word", "reply"}, "word LIKE '%' ||"+SmeInput+"|| '%'", null, null, null, null);
-        //QÆæ‚ğˆê”Ô‰‚ß‚É
+        //ï¿½Qï¿½Æï¿½ï¿½ï¿½ï¿½Ôï¿½ï¿½ß‚ï¿½
         boolean isEof = cursor.moveToFirst();
-        //ƒf[ƒ^‚ğæ“¾‚µ‚Ä‚¢‚­
+        //ï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
         while(isEof){
-            //‚±‚±‚©‚çŠJ”­’†http://tomcky.hatenadiary.jp/entry/2013/08/25/235502
-            //æ“¾‚µ‚Ämainactivity‚Éæ“¾‚µ‚½‚Ì“n‚µ‚Ä‚»‚±‚Å‚Å‰æ–Ê‚É•\¦‚·‚éˆ—ì‚é
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½ï¿½ï¿½ï¿½http://tomcky.hatenadiary.jp/entry/2013/08/25/235502
+            //ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½mainactivityï¿½Éæ“¾ï¿½ï¿½ï¿½ï¿½ï¿½Ì“nï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½Å‚Å‰ï¿½Ê‚É•\ï¿½ï¿½ï¿½ï¿½ï¿½éˆï¿½ï¿½ï¿½ï¿½ï¿½
             Log.d("Reply", "" + cursor.getInt(cursor.getColumnIndex("reply")));
             isEof = cursor.moveToNext();
         }*/

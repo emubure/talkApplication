@@ -38,12 +38,12 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Reply = new Reply(getApplicationContext()); //reply
-        Memory= new Memory(getApplicationContext());//memory
-        Memory.memory();
-
         DatabaseHelper hlpr = new DatabaseHelper(getApplicationContext());
         mDb = hlpr.getWritableDatabase();
+
+        Reply = new Reply(getApplicationContext()); //reply
+        Memory= new Memory(getApplicationContext());//memory
+        Memory.memory(mDb);
         //mDb.execSQL("create table pattern(id integer primary key, word text, reply text);");
 
         meInput = (EditText)findViewById(R.id.meInput);//入力したもの
@@ -63,18 +63,18 @@ public class MainActivity extends Activity {
                     //キーボードを閉じる
                     inputMethodManager.hideSoftInputFromWindow(meInput.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
 
-                    String sql = "select * from pattern;";
+                    /*String sql = "select * from pattern;";
                     try {
                         mDb.execSQL(sql);
                     } catch (SQLException e){
                         Log.e("ERROR", e.toString());
-                    }
+                    }*/
                     //反応
                     Reply.SmeInput = meInput.getText().toString();
-                    Log.d("Confirm","Test");
-                    Log.d("Confirm", Reply.SmeInput);
-                    Reply.MReply();//返信処理
-                    Reply.SmeInput = meInput.getText().toString();//処理結果を代入して描画
+                    Log.d("MConfirm", Reply.SmeInput);
+                    Reply.MReply(mDb);//返信処理
+
+                    aiText.setText(""+Reply.SmeOutput); //処理結果を代入して描画
                     return true;
                 }
                 return false;

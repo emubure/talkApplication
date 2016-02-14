@@ -10,7 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "talkdb";
     private static final int DB_VERSION = 1;
-    private static final String CREATE_TABLE = "create table pattern ( " +
+    static final String TABLE_NAME = "pattern";
+    private static final String CREATE_TABLE = "create table "+TABLE_NAME+"( " +
                                            "id integer primary key autoincrement, "+
                                            "word text not null, " +
                                            "reply text not null);";
